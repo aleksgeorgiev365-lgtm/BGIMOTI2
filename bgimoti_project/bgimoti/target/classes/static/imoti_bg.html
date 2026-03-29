@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>БГИмоти — Намери своя дом</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Mulish:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brand: #C8392B; --brand-dark: #9B2D22; --brand-light: #F5E8E7;
+    --gold: #D4A853; --dark: #1A1A2E; --mid: #2E2E4A; --text: #2C2C3A;
+    --muted: #6B6B80; --border: #E4E4EE; --bg: #F7F7FB; --white: #FFFFFF;
+    --success: #27AE60; --error: #E74C3C;
+    --shadow: 0 4px 24px rgba(26,26,46,0.10);
+    --shadow-lg: 0 12px 48px rgba(26,26,46,0.18);
+    --radius: 14px; --radius-sm: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Mulish', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  header { background: var(--dark); position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 20px rgba(0,0,0,0.3); }
+  .header-top { display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 64px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .logo-icon { width: 38px; height: 38px; background: var(--brand); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+  .logo-text { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 900; color: var(--white); letter-spacing: -0.5px; }
+  .logo-text span { color: var(--brand); }
+  nav { display: flex; align-items: center; gap: 6px; }
+  nav a { color: rgba(255,255,255,0.75); text-decoration: none; font-size: 13px; font-weight: 600; padding: 8px 14px; border-radius: 8px; transition: all 0.2s; letter-spacing: 0.3px; cursor: pointer; }
+  nav a:hover { color: #fff; background: rgba(255,255,255,0.1); }
+  .header-actions { display: flex; align-items: center; gap: 10px; }
+
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: 8px; font-family: 'Mulish', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; border: none; transition: all 0.2s; text-decoration: none; letter-spacing: 0.3px; }
+  .btn-ghost { background: transparent; border: 1.5px solid rgba(255,255,255,0.25); color: rgba(255,255,255,0.85); }
+  .btn-ghost:hover { border-color: rgba(255,255,255,0.6); color: #fff; }
+  .btn-brand { background: var(--brand); color: #fff; }
+  .btn-brand:hover { background: var(--brand-dark); transform: translateY(-1px); }
+  .btn-brand:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .btn-outline { background: transparent; border: 1.5px solid var(--brand); color: var(--brand); }
+  .btn-outline:hover { background: var(--brand); color: #fff; }
+  .btn-white { background: #fff; color: var(--brand); }
+  .btn-white:hover { background: var(--bg); }
+
+  .hero { background: linear-gradient(135deg, var(--dark) 0%, var(--mid) 60%, #3A2A5A 100%); padding: 56px 32px 64px; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); opacity: 0.6; }
+  .hero-inner { position: relative; max-width: 900px; margin: 0 auto; text-align: center; }
+  .hero h1 { font-family: 'Playfair Display', serif; font-size: 46px; font-weight: 900; color: var(--white); line-height: 1.15; margin-bottom: 10px; }
+  .hero h1 span { color: var(--brand); }
+  .hero p { color: rgba(255,255,255,0.6); font-size: 15px; margin-bottom: 36px; }
+  .search-box { background: var(--white); border-radius: 16px; padding: 24px; box-shadow: var(--shadow-lg); }
+  .search-tabs { display: flex; gap: 4px; margin-bottom: 20px; border-bottom: 2px solid var(--border); }
+  .search-tab { padding: 10px 22px; font-size: 13px; font-weight: 700; border: none; background: none; cursor: pointer; color: var(--muted); border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all 0.2s; letter-spacing: 0.3px; }
+  .search-tab.active { color: var(--brand); border-bottom-color: var(--brand); }
+  .search-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap: 12px; align-items: end; }
+  .search-field label { display: block; font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+  .search-field select, .search-field input { width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-family: 'Mulish', sans-serif; font-size: 13px; color: var(--text); background: var(--bg); transition: border-color 0.2s; appearance: none; }
+  .search-field select:focus, .search-field input:focus { outline: none; border-color: var(--brand); }
+
+  .stats-bar { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 32px; }
+  .stats-inner { display: flex; align-items: center; justify-content: space-between; max-width: 1200px; margin: 0 auto; padding: 14px 0; }
+  .stat-num { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--brand); }
+  .stat-label { font-size: 12px; font-weight: 600; color: var(--muted); }
+
+  .main-layout { display: grid; grid-template-columns: 280px 1fr; gap: 24px; max-width: 1300px; margin: 0 auto; padding: 28px 24px; }
+  .sidebar { display: flex; flex-direction: column; gap: 16px; }
+  .filter-card { background: var(--white); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .filter-card h3 { font-size: 13px; font-weight: 800; color: var(--dark); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--border); }
+  .filter-group { margin-bottom: 16px; }
+  .filter-group label { display: block; font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 7px; }
+  .filter-group select, .filter-group input { width: 100%; padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-family: 'Mulish', sans-serif; font-size: 13px; color: var(--text); background: var(--bg); appearance: none; transition: border-color 0.2s; }
+  .filter-group select:focus, .filter-group input:focus { outline: none; border-color: var(--brand); }
+  .price-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .checkbox-group { display: flex; flex-direction: column; gap: 8px; }
+  .checkbox-item { display: flex; align-items: center; gap: 9px; font-size: 13px; color: var(--text); cursor: pointer; }
+  .checkbox-item input[type=checkbox] { accent-color: var(--brand); width: 15px; height: 15px; }
+
+  .listings-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+  .listings-header h2 { font-size: 20px; font-weight: 800; color: var(--dark); }
+  .sort-select { padding: 8px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-family: 'Mulish', sans-serif; font-size: 13px; color: var(--text); background: var(--white); appearance: none; cursor: pointer; }
+  .view-btns { display: flex; gap: 4px; }
+  .view-btn { width: 34px; height: 34px; border: 1.5px solid var(--border); border-radius: 6px; background: var(--white); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; font-size: 15px; }
+  .view-btn.active { background: var(--brand); border-color: var(--brand); color: #fff; }
+
+  .cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .prop-card { background: var(--white); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); transition: all 0.25s; cursor: pointer; position: relative; }
+  .prop-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--brand); }
+  .card-image { position: relative; height: 210px; overflow: hidden; background: linear-gradient(135deg, #E8E8F0, #D0D0E0); }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.45s ease; display: block; }
+  .prop-card:hover .card-image img { transform: scale(1.07); }
+  .card-badge { position: absolute; top: 12px; left: 12px; background: var(--brand); color: #fff; font-size: 11px; font-weight: 800; letter-spacing: 0.5px; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; }
+  .card-badge.new { background: var(--success); }
+  .card-badge.rent { background: var(--gold); }
+  .save-btn { position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; background: rgba(255,255,255,0.95); border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 17px; transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+  .save-btn:hover { transform: scale(1.15); }
+  .card-body { padding: 16px 18px 18px; }
+  .card-price { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--brand); margin-bottom: 4px; }
+  .card-title { font-size: 14px; font-weight: 700; color: var(--dark); margin-bottom: 6px; line-height: 1.4; }
+  .card-location { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--muted); margin-bottom: 12px; }
+  .card-specs { display: flex; gap: 14px; border-top: 1px solid var(--border); padding-top: 12px; margin-top: 4px; }
+  .spec { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--muted); font-weight: 600; }
+  .card-footer { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-top: 1px solid var(--border); background: var(--bg); }
+  .broker-mini { display: flex; align-items: center; gap: 8px; }
+  .broker-avatar { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, var(--brand), var(--gold)); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 12px; font-weight: 700; }
+  .broker-mini span { font-size: 12px; color: var(--muted); font-weight: 600; }
+  .stars { color: var(--gold); font-size: 12px; }
+
+  /* ── MODAL ── */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(26,26,46,0.75); backdrop-filter: blur(6px); z-index: 2000; align-items: flex-start; justify-content: center; padding: 24px; overflow-y: auto; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--white); border-radius: 20px; width: 100%; max-width: 900px; box-shadow: var(--shadow-lg); animation: slideUp 0.3s ease; margin: auto; }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 28px; border-bottom: 1px solid var(--border); }
+  .modal-header h2 { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--dark); }
+  .modal-close { width: 36px; height: 36px; border: none; background: var(--bg); border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .modal-close:hover { background: var(--brand-light); color: var(--brand); }
+  .modal-body { padding: 28px; }
+  .modal-grid { display: grid; grid-template-columns: 1fr 340px; gap: 28px; }
+  .modal-images { display: grid; grid-template-columns: 2fr 1fr; gap: 8px; border-radius: 12px; overflow: hidden; margin-bottom: 24px; height: 300px; }
+  .modal-img-main { overflow: hidden; background: #E0E0F0; }
+  .modal-img-main img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+  .modal-img-main img:hover { transform: scale(1.04); }
+  .modal-img-side { display:flex;flex-direction:column;gap:8px; }
+  .modal-img-thumb { flex:1; overflow: hidden; background: #D8D8E8; cursor: pointer; }
+  .modal-img-thumb img { width:100%;height:100%;object-fit:cover;transition:transform 0.3s;display:block; }
+  .modal-img-thumb img:hover { transform: scale(1.08); }
+
+  .modal-details h3 { font-size: 13px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 12px; margin-top: 20px; }
+  .modal-details h3:first-child { margin-top: 0; }
+  .detail-specs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .detail-spec { background: var(--bg); border-radius: 8px; padding: 12px; border: 1px solid var(--border); }
+  .detail-spec-label { font-size: 11px; color: var(--muted); font-weight: 600; }
+  .detail-spec-value { font-size: 15px; font-weight: 800; color: var(--dark); margin-top: 2px; }
+  .description-text { font-size: 14px; color: var(--muted); line-height: 1.7; }
+  .features-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .feature-tag { padding: 5px 12px; border-radius: 20px; background: var(--bg); border: 1px solid var(--border); font-size: 12px; font-weight: 600; color: var(--dark); }
+  .broker-panel { background: var(--bg); border-radius: 12px; border: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+  .broker-info { display: flex; align-items: center; gap: 14px; }
+  .broker-avatar-lg { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, var(--brand), var(--gold)); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 22px; font-weight: 700; flex-shrink: 0; }
+  .broker-name { font-size: 16px; font-weight: 800; color: var(--dark); }
+  .broker-title { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .broker-rating { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
+  .contact-form { display: flex; flex-direction: column; gap: 10px; }
+  .contact-form input, .contact-form textarea { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-family: 'Mulish', sans-serif; font-size: 13px; color: var(--text); background: var(--white); resize: vertical; transition: border-color 0.2s; }
+  .contact-form input:focus, .contact-form textarea:focus { outline: none; border-color: var(--brand); }
+  .contact-form textarea { min-height: 80px; }
+  .rate-section { border-top: 1px solid var(--border); padding-top: 16px; }
+  .rate-section h4 { font-size: 12px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px; }
+  .star-rating { display: flex; gap: 6px; }
+  .star-btn { font-size: 24px; cursor: pointer; transition: transform 0.15s; color: #DDD; background: none; border: none; padding: 0; }
+  .star-btn:hover, .star-btn.active { color: var(--gold); transform: scale(1.2); }
+
+  /* ── AUTH MODAL ── */
+  .auth-tabs { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 24px; }
+  .auth-tab { flex: 1; padding: 12px; text-align: center; font-size: 14px; font-weight: 700; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all 0.2s; background: none; border-top: none; border-left: none; border-right: none; font-family: 'Mulish', sans-serif; }
+  .auth-tab.active { color: var(--brand); border-bottom-color: var(--brand); }
+  .auth-form { display: flex; flex-direction: column; gap: 12px; }
+  .form-field label { display: block; font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .form-field input, .form-field select { width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-family: 'Mulish', sans-serif; font-size: 14px; color: var(--text); background: var(--bg); transition: border-color 0.2s; appearance: none; }
+  .form-field input:focus, .form-field select:focus { outline: none; border-color: var(--brand); }
+  .form-field input.error { border-color: var(--error); background: #FEF2F2; }
+
+  /* ── ERROR / SUCCESS ALERTS ── */
+  .alert { padding: 12px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 10px; margin-bottom: 4px; animation: fadeIn 0.25s ease; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+  .alert-error { background: #FEF2F2; border: 1.5px solid #FECACA; color: #991B1B; }
+  .alert-success { background: #F0FDF4; border: 1.5px solid #BBF7D0; color: #166534; }
+  .alert-icon { font-size: 16px; flex-shrink: 0; }
+
+  .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .role-pills { display: flex; gap: 8px; }
+  .role-pill { flex: 1; padding: 10px; border: 1.5px solid var(--border); border-radius: 8px; text-align: center; cursor: pointer; font-size: 13px; font-weight: 700; color: var(--muted); transition: all 0.2s; background: var(--bg); }
+  .role-pill.active { border-color: var(--brand); color: var(--brand); background: var(--brand-light); }
+
+  /* ── ADMIN BAR ── */
+  .admin-bar { display: none; background: var(--dark); border-bottom: 3px solid var(--brand); padding: 10px 32px; }
+  .admin-bar.visible { display: flex; align-items: center; justify-content: space-between; }
+  .admin-bar span { color: rgba(255,255,255,0.7); font-size: 13px; }
+  .admin-actions { display: flex; gap: 8px; }
+
+  .saved-count { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; background: var(--brand); color: #fff; font-size: 10px; font-weight: 700; border-radius: 50%; margin-left: 4px; }
+
+  /* ── TOAST ── */
+  .toast { position: fixed; bottom: 24px; right: 24px; background: var(--dark); color: #fff; padding: 14px 20px; border-radius: 10px; font-size: 14px; font-weight: 600; box-shadow: var(--shadow-lg); z-index: 3000; display: flex; align-items: center; gap: 10px; transform: translateY(100px); opacity: 0; transition: all 0.3s; max-width: 320px; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  .user-pill { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); border-radius: 24px; padding: 5px 12px 5px 5px; cursor: pointer; transition: background 0.2s; }
+  .user-pill:hover { background: rgba(255,255,255,0.15); }
+  .user-pill-avatar { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, var(--brand), var(--gold)); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; }
+  .user-pill span { font-size: 13px; font-weight: 600; color: #fff; }
+
+  .pagination { display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 32px; }
+  .page-btn { width: 38px; height: 38px; border: 1.5px solid var(--border); border-radius: 8px; background: var(--white); cursor: pointer; font-family: 'Mulish', sans-serif; font-size: 14px; font-weight: 700; color: var(--text); transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+  .page-btn.active { background: var(--brand); border-color: var(--brand); color: #fff; }
+  .page-btn:hover:not(.active) { border-color: var(--brand); color: var(--brand); }
+
+  .add-listing-card { background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%); border-radius: var(--radius); padding: 24px; color: #fff; text-align: center; border: none; }
+  .add-listing-card h3 { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+  .add-listing-card p { font-size: 13px; opacity: 0.85; margin-bottom: 16px; }
+
+  .api-badge { display: inline-flex; align-items: center; gap: 6px; background: #1a1a2e; color: #27ae60; border: 1px solid #27ae60; border-radius: 20px; padding: 4px 12px; font-size: 11px; font-weight: 700; margin-left: 10px; }
+  .api-badge.offline { color: #e74c3c; border-color: #e74c3c; }
+</style>
+</head>
+<body>
+
+<!-- ADMIN BAR -->
+<div class="admin-bar" id="adminBar">
+  <span>🛡️ Административен панел — Добре дошли, Администратор</span>
+  <div class="admin-actions">
+    <button class="btn btn-ghost" style="font-size:12px" onclick="openModal('addListingModal')">➕ Добави обява</button>
+    <button class="btn btn-ghost" style="font-size:12px" onclick="showToast('📊 Зарежда статистики...')">📊 Статистики</button>
+    <button class="btn btn-ghost" style="font-size:12px" onclick="showToast('👥 Управление на потребители...')">👥 Потребители</button>
+  </div>
+</div>
+
+<header>
+  <div class="header-top">
+    <a class="logo" href="#">
+      <div class="logo-icon">🏠</div>
+      <span class="logo-text">БГ<span>Имоти</span></span>
+    </a>
+    <nav>
+      <a onclick="filterType('')">Всички</a>
+      <a onclick="filterType('apartment')">Апартаменти</a>
+      <a onclick="filterType('house')">Къщи</a>
+      <a onclick="filterType('commercial')">Търговски</a>
+      <a onclick="filterType('land')">Земя</a>
+      <a onclick="openSavedModal()">Запазени <span class="saved-count" id="savedCount">0</span></a>
+    </nav>
+    <div class="header-actions" id="headerActions">
+      <button class="btn btn-ghost" onclick="openModal('authModal')">Вход</button>
+      <button class="btn btn-brand" onclick="openModal('authModal')">Регистрация</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <h1>Намери своя <span>перфектен имот</span><br>в България</h1>
+    <p>Над 28 450 обяви от проверени брокери и собственици</p>
+    <div class="search-box">
+      <div class="search-tabs">
+        <button class="search-tab active" onclick="setSearchTab(this)">Купи</button>
+        <button class="search-tab" onclick="setSearchTab(this)">Наем</button>
+        <button class="search-tab" onclick="setSearchTab(this)">Ново строителство</button>
+      </div>
+      <div class="search-row">
+        <div class="search-field">
+          <label>Местоположение</label>
+          <input type="text" id="locationSearch" placeholder="Град, квартал или улица..." oninput="filterListings()">
+        </div>
+        <div class="search-field">
+          <label>Тип имот</label>
+          <select id="typeSearch" onchange="filterListings()">
+            <option value="">Всички типове</option>
+            <option value="apartment">Апартамент</option>
+            <option value="house">Къща / Вила</option>
+            <option value="commercial">Търговски</option>
+            <option value="land">Земя</option>
+          </select>
+        </div>
+        <div class="search-field">
+          <label>Цена до (€)</label>
+          <input type="number" id="priceSearch" placeholder="Макс. цена" oninput="filterListings()">
+        </div>
+        <div class="search-field">
+          <label>Стаи</label>
+          <select id="roomsSearch" onchange="filterListings()">
+            <option value="">Всички</option>
+            <option value="1">1 стая</option>
+            <option value="2">2 стаи</option>
+            <option value="3">3 стаи</option>
+            <option value="4">4+ стаи</option>
+          </select>
+        </div>
+        <div><label style="display:block;height:22px"></label>
+          <button class="btn btn-brand" style="height:40px;padding:0 22px" onclick="filterListings()">🔍 Търси</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div style="display:flex;align-items:center;gap:8px">
+      <span class="stat-num" id="totalCount">—</span>
+      <div><div class="stat-label">Активни обяви</div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span class="stat-num">4 820</span>
+      <div><div class="stat-label">Проверени брокери</div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span class="stat-num">12 100</span>
+      <div><div class="stat-label">Сключени сделки</div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span class="stat-num">98%</span>
+      <div><div class="stat-label">Доволни клиенти</div></div>
+    </div>
+    <div>
+      <span class="api-badge offline" id="apiBadge">⚡ Spring Boot: офлайн</span>
+    </div>
+  </div>
+</div>
+
+<div class="main-layout">
+  <aside class="sidebar">
+    <div class="filter-card">
+      <h3>🔧 Филтри</h3>
+      <div class="filter-group">
+        <label>Населено място</label>
+        <select id="cityFilter" onchange="filterListings()">
+          <option value="">Всички градове</option>
+          <option value="Sofia">София</option>
+          <option value="Plovdiv">Пловдив</option>
+          <option value="Varna">Варна</option>
+          <option value="Burgas">Бургас</option>
+          <option value="Stara Zagora">Стара Загора</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Тип имот</label>
+        <select id="typeFilter" onchange="filterListings()">
+          <option value="">Всички</option>
+          <option value="apartment">Апартамент</option>
+          <option value="house">Къща / Вила</option>
+          <option value="commercial">Търговски обект</option>
+          <option value="land">Земя / Парцел</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Цена (€)</label>
+        <div class="price-row">
+          <input type="number" id="minPrice" placeholder="От" oninput="filterListings()">
+          <input type="number" id="maxPrice" placeholder="До" oninput="filterListings()">
+        </div>
+      </div>
+      <div class="filter-group">
+        <label>Площ (м²)</label>
+        <div class="price-row">
+          <input type="number" id="minArea" placeholder="От" oninput="filterListings()">
+          <input type="number" id="maxArea" placeholder="До" oninput="filterListings()">
+        </div>
+      </div>
+      <div class="filter-group">
+        <label>Стаи</label>
+        <select id="roomsFilter" onchange="filterListings()">
+          <option value="">Всички</option>
+          <option value="1">1 стая</option>
+          <option value="2">2 стаи</option>
+          <option value="3">3 стаи</option>
+          <option value="4">4+ стаи</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Допълнително</label>
+        <div class="checkbox-group">
+          <label class="checkbox-item"><input type="checkbox" onchange="filterListings()"> Гараж / Паркомясто</label>
+          <label class="checkbox-item"><input type="checkbox" onchange="filterListings()"> Климатик</label>
+          <label class="checkbox-item"><input type="checkbox" onchange="filterListings()"> Асансьор</label>
+          <label class="checkbox-item"><input type="checkbox" onchange="filterListings()"> Интернет</label>
+          <label class="checkbox-item"><input type="checkbox" onchange="filterListings()"> Обзаведен</label>
+          <label class="checkbox-item"><input type="checkbox" onchange="filterListings()"> Ново строителство</label>
+        </div>
+      </div>
+      <button class="btn btn-brand" style="width:100%;margin-top:4px" onclick="resetFilters()">Изчисти филтрите</button>
+    </div>
+    <div class="add-listing-card">
+      <h3>Имате имот за продажба?</h3>
+      <p>Публикувайте вашата обява и достигнете до хиляди купувачи.</p>
+      <button class="btn btn-white" onclick="openModal('authModal')">Добави обява</button>
+    </div>
+  </aside>
+
+  <main>
+    <div class="listings-header">
+      <div>
+        <h2>Обяви за имоти</h2>
+        <span id="listingsCount" style="font-size:13px;color:var(--muted)">Зарежда...</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <select class="sort-select" onchange="sortListings(this.value)">
+          <option value="newest">Най-нови</option>
+          <option value="price-asc">Цена (ниска→висока)</option>
+          <option value="price-desc">Цена (висока→ниска)</option>
+          <option value="area">Площ</option>
+        </select>
+        <div class="view-btns">
+          <button class="view-btn active">⊞</button>
+          <button class="view-btn">≡</button>
+        </div>
+      </div>
+    </div>
+    <div class="cards-grid" id="cardsGrid"></div>
+    <div class="pagination">
+      <button class="page-btn">‹</button>
+      <button class="page-btn active">1</button>
+      <button class="page-btn">2</button>
+      <button class="page-btn">3</button>
+      <button class="page-btn">›</button>
+    </div>
+  </main>
+</div>
+
+<!-- ── PROPERTY DETAIL MODAL ── -->
+<div class="modal-overlay" id="propModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modalTitle">Детайли за имота</h2>
+      <button class="modal-close" onclick="closeModal('propModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-images">
+        <div class="modal-img-main"><img id="modalImgMain" src="" alt="Снимка на имота"></div>
+        <div class="modal-img-side">
+          <div class="modal-img-thumb"><img id="modalImgThumb1" src="" alt="" onclick="swapMain(this.src)"></div>
+          <div class="modal-img-thumb"><img id="modalImgThumb2" src="" alt="" onclick="swapMain(this.src)"></div>
+        </div>
+      </div>
+      <div class="modal-grid">
+        <div class="modal-details">
+          <h3>Характеристики</h3>
+          <div class="detail-specs" id="modalSpecs"></div>
+          <h3>Описание</h3>
+          <p class="description-text" id="modalDesc"></p>
+          <h3>Удобства</h3>
+          <div class="features-list" id="modalFeatures"></div>
+        </div>
+        <div>
+          <div class="broker-panel">
+            <div class="broker-info">
+              <div class="broker-avatar-lg" id="modalBrokerAvatar">А</div>
+              <div>
+                <div class="broker-name" id="modalBrokerName">Брокер</div>
+                <div class="broker-title">Лицензиран брокер</div>
+                <div class="broker-rating">
+                  <span class="stars" id="modalStars">★★★★★</span>
+                  <span id="modalRating">4.8</span>
+                  <small id="modalReviews">(24 отзива)</small>
+                </div>
+              </div>
+            </div>
+            <div class="contact-form">
+              <input type="text" placeholder="Вашето ime" id="contactName">
+              <input type="tel" placeholder="Телефон" id="contactPhone">
+              <textarea placeholder="Съобщение..." id="contactMsg"></textarea>
+              <button class="btn btn-brand" style="width:100%" onclick="sendContact()">📬 Изпрати съобщение</button>
+              <button class="btn btn-outline" style="width:100%" onclick="showToast('📞 Свързвате се с брокера...')">📞 Обади се</button>
+            </div>
+            <div class="rate-section">
+              <h4>Оценете брокера</h4>
+              <div class="star-rating">
+                <button class="star-btn" onclick="rateBroker(1)">★</button>
+                <button class="star-btn" onclick="rateBroker(2)">★</button>
+                <button class="star-btn" onclick="rateBroker(3)">★</button>
+                <button class="star-btn" onclick="rateBroker(4)">★</button>
+                <button class="star-btn" onclick="rateBroker(5)">★</button>
+              </div>
+            </div>
+            <button class="btn" style="background:var(--brand-light);color:var(--brand);width:100%" onclick="toggleSaveModal()">♡ Запази обявата</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── AUTH MODAL ── -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-header">
+      <h2>Добре дошли в БГИмоти</h2>
+      <button class="modal-close" onclick="closeModal('authModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="auth-tabs">
+        <button class="auth-tab active" onclick="setAuthTab(this,'login')">Вход</button>
+        <button class="auth-tab" onclick="setAuthTab(this,'register')">Регистрация</button>
+      </div>
+
+      <!-- LOGIN -->
+      <div id="loginForm" class="auth-form">
+        <div id="loginAlert"></div>
+        <div class="form-field">
+          <label>Имейл</label>
+          <input type="email" id="loginEmail" placeholder="вашият@имейл.com" oninput="clearAlert('loginAlert')">
+        </div>
+        <div class="form-field">
+          <label>Парола</label>
+          <input type="password" id="loginPass" placeholder="••••••••" oninput="clearAlert('loginAlert')" onkeydown="if(event.key==='Enter')doLogin()">
+        </div>
+        <button class="btn btn-brand" id="loginBtn" style="width:100%;padding:13px;font-size:14px;margin-top:4px" onclick="doLogin()">
+          Влез в профила
+        </button>
+        <p style="text-align:center;font-size:12px;color:var(--muted)">
+          Нямате акаунт?
+          <a href="#" style="color:var(--brand);font-weight:700" onclick="setAuthTab(document.querySelectorAll('.auth-tab')[1],'register')">Регистрирайте се</a>
+        </p>
+        <div style="margin-top:8px;padding:12px;background:var(--bg);border-radius:8px;border:1px dashed var(--border)">
+          <p style="font-size:11px;color:var(--muted);font-weight:600;margin-bottom:6px">🔑 ТЕСТОВИ АКАУНТИ (парола: password123)</p>
+          <p style="font-size:11px;color:var(--muted)">👤 Клиент: ivan@example.com</p>
+          <p style="font-size:11px;color:var(--muted)">🏢 Брокер: maria@bgimoti.bg</p>
+          <p style="font-size:11px;color:var(--muted)">🛡️ Админ: admin@bgimoti.bg</p>
+        </div>
+      </div>
+
+      <!-- REGISTER -->
+      <div id="registerForm" class="auth-form" style="display:none">
+        <div id="registerAlert"></div>
+        <div class="form-field">
+          <label>Тип профил</label>
+          <div class="role-pills">
+            <div class="role-pill active" id="roleClient" onclick="selectRole('CLIENT')">👤 Клиент</div>
+            <div class="role-pill" id="roleBroker" onclick="selectRole('BROKER')">🏢 Брокер</div>
+            <div class="role-pill" id="roleAdmin" onclick="selectRole('ADMIN')">🛡️ Администратор</div>
+          </div>
+        </div>
+        <div class="form-field">
+          <label>Пълно ime</label>
+          <input type="text" id="regName" placeholder="Иван Иванов" oninput="clearAlert('registerAlert')">
+        </div>
+        <div class="form-field">
+          <label>Имейл</label>
+          <input type="email" id="regEmail" placeholder="вашият@имейл.com" oninput="clearAlert('registerAlert')">
+        </div>
+        <div class="form-field">
+          <label>Парола (мин. 8 символа)</label>
+          <input type="password" id="regPass" placeholder="••••••••" oninput="clearAlert('registerAlert')">
+        </div>
+        <div class="form-field" id="brokerFields" style="display:none">
+          <label>Лиценз номер</label>
+          <input type="text" id="regLicense" placeholder="BG-XXXXXXXX">
+        </div>
+        <button class="btn btn-brand" id="registerBtn" style="width:100%;padding:13px;font-size:14px;margin-top:4px" onclick="doRegister()">
+          Създай профил
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SAVED MODAL ── -->
+<div class="modal-overlay" id="savedModal">
+  <div class="modal" style="max-width:700px">
+    <div class="modal-header">
+      <h2>❤️ Запазени обяви</h2>
+      <button class="modal-close" onclick="closeModal('savedModal')">✕</button>
+    </div>
+    <div class="modal-body" id="savedListContainer">
+      <p style="text-align:center;color:var(--muted);padding:40px 0">Нямате запазени обяви.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── ADD LISTING MODAL ── -->
+<div class="modal-overlay" id="addListingModal">
+  <div class="modal" style="max-width:620px">
+    <div class="modal-header">
+      <h2>➕ Публикувай обява</h2>
+      <button class="modal-close" onclick="closeModal('addListingModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="auth-form">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="form-field"><label>Заглавие</label><input type="text" id="newTitle" placeholder="Тристаен, Лозенец"></div>
+          <div class="form-field"><label>Тип</label><select id="newType"><option value="apartment">Апартамент</option><option value="house">Къща</option><option value="commercial">Търговски</option><option value="land">Земя</option></select></div>
+          <div class="form-field"><label>Цена (€)</label><input type="number" id="newPrice" placeholder="150000"></div>
+          <div class="form-field"><label>Площ (м²)</label><input type="number" id="newArea" placeholder="85"></div>
+          <div class="form-field"><label>Стаи</label><select id="newRooms"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5+</option></select></div>
+          <div class="form-field"><label>Град</label><select id="newCity"><option>София</option><option>Пловдив</option><option>Варна</option><option>Бургас</option></select></div>
+        </div>
+        <div class="form-field"><label>Адрес</label><input type="text" id="newAddress" placeholder="ул. „Витоша" 12"></div>
+        <div class="form-field"><label>Описание</label><textarea style="width:100%;min-height:90px;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-family:Mulish,sans-serif;font-size:13px;resize:vertical" id="newDesc" placeholder="Опишете имота..."></textarea></div>
+        <button class="btn btn-brand" style="width:100%;padding:13px;font-size:14px" onclick="addNewListing()">Публикувай обявата</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <span id="toastIcon">✅</span>
+  <span id="toastMsg">Готово!</span>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════
+//  КОНФИГУРАЦИЯ — адресът на Spring Boot сървъра
+// ════════════════════════════════════════════════════════════
+const API = 'http://localhost:8080/api';
+
+// ── Емоджи и типове ─────────────────────────────────────────
+const emojis   = { apartment:'🏢', house:'🏡', commercial:'🏪', land:'🌾' };
+const typesBG  = { apartment:'Апартамент', house:'Къща', commercial:'Търговски', land:'Земя' };
+
+// ── Вградени данни (fallback при офлайн Spring Boot) ────────
+const DEMO_DATA = [
+  {
+    id:1, type:'apartment', title:'Просторен тристаен апартамент, кв. Лозенец',
+    city:'Sofia', district:'Лозенец', price:185000, area:95, rooms:3, floor:5, totalFloors:8,
+    brokerName:'Мария Иванова', brokerInitial:'М', rating:4.9, reviews:38, badge:'',
+    description:'Луксозен апартамент в сърцето на Лозенец. Южно изложение, изглед към Витоша. Ремонтиран с висококачествени материали. Подземен гараж, денонощна охрана.',
+    features:['Гараж','Асансьор','Климатик','Обзаведен','Охрана'],
+    images:[
+      'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80',
+      'https://images.unsplash.com/photo-1560185007-c5ca9d2c014d?w=400&q=80',
+      'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&q=80'
+    ]
+  },
+  {
+    id:2, type:'house', title:'Самостоятелна къща с двор, Бояна',
+    city:'Sofia', district:'Бояна', price:380000, area:280, rooms:5, floor:null, totalFloors:2,
+    brokerName:'Петър Стоянов', brokerInitial:'П', rating:4.7, reviews:21, badge:'new',
+    description:'Луксозна самостоятелна къща в кв. Бояна. Три нива, оборудвана кухня, голям двор с барбекю и плувен басейн. Панорамна гледка към планината.',
+    features:['Гараж','Градина','Басейн','Климатик','Охранителна система'],
+    images:[
+      'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80',
+      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80',
+      'https://images.unsplash.com/photo-1571939228382-b2f2b585ce15?w=400&q=80'
+    ]
+  },
+  {
+    id:3, type:'apartment', title:'Двустаен апартамент, Младост 1',
+    city:'Sofia', district:'Младост', price:98000, area:58, rooms:2, floor:3, totalFloors:7,
+    brokerName:'Анна Петрова', brokerInitial:'А', rating:4.5, reviews:15, badge:'',
+    description:'Светъл двустаен апартамент в кв. Младост 1. Близо до метростанция. Подходящ за млади семейства и инвеститори. Нов кухненски бокс.',
+    features:['Асансьор','Интернет','Паркомясто'],
+    images:[
+      'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&q=80',
+      'https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400&q=80'
+    ]
+  },
+  {
+    id:4, type:'commercial', title:'Магазин в централна търговска зона',
+    city:'Plovdiv', district:'Център', price:145000, area:68, rooms:1, floor:0, totalFloors:1,
+    brokerName:'Георги Димитров', brokerInitial:'Г', rating:4.8, reviews:29, badge:'',
+    description:'Търговски обект на оживена пешеходна улица в центъра на Пловдив. Висок пешеходен трафик, голяма витрина, климатизация.',
+    features:['Климатик','Интернет','Охрана','Видеонаблюдение'],
+    images:[
+      'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80',
+      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80',
+      'https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&q=80'
+    ]
+  },
+  {
+    id:5, type:'apartment', title:'Едностаен апартамент, морски изглед',
+    city:'Varna', district:'Чайка', price:72000, area:38, rooms:1, floor:7, totalFloors:9,
+    brokerName:'Елена Николова', brokerInitial:'Е', rating:4.6, reviews:11, badge:'rent',
+    description:'Стилен едностаен с панорамна гледка към Черно море. Напълно обзаведен, подходящ за нощувки или постоянно обитаване. Само 200м от плажа.',
+    features:['Обзаведен','Климатик','Морски изглед','Балкон'],
+    images:[
+      'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80',
+      'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=400&q=80',
+      'https://images.unsplash.com/photo-1560185008-a33f5c7ce2e1?w=400&q=80'
+    ]
+  },
+  {
+    id:6, type:'land', title:'Урегулиран парцел за вила, Созопол',
+    city:'Burgas', district:'Созопол', price:55000, area:620, rooms:0, floor:null, totalFloors:null,
+    brokerName:'Христо Ангелов', brokerInitial:'Х', rating:4.4, reviews:8, badge:'',
+    description:'Красив парцел в живописна местност край Созопол. Регулация, всички комуникации, забележителна природа. Идеален за вила или малък хотел.',
+    features:['Ток','Вода','Регулация','Панорамен изглед'],
+    images:[
+      'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&q=80',
+      'https://images.unsplash.com/photo-1441722368-0a28c3f6fd25?w=400&q=80',
+      'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400&q=80'
+    ]
+  },
+  {
+    id:7, type:'apartment', title:'Четиристаен апартамент ново строителство',
+    city:'Sofia', district:'Витоша', price:245000, area:132, rooms:4, floor:2, totalFloors:6,
+    brokerName:'Мария Иванова', brokerInitial:'М', rating:4.9, reviews:38, badge:'new',
+    description:'Просторен четиристаен в ново строителство кв. Витоша. АКТ 16, луксозна поддръжка, подземни гаражи, охрана 24/7. Топлоизолация и PVC дограма.',
+    features:['Гараж','Асансьор','Климатик','Охрана','Ново строителство','АКТ 16'],
+    images:[
+      'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&q=80',
+      'https://images.unsplash.com/photo-1560184897-ae75f418493e?w=400&q=80',
+      'https://images.unsplash.com/photo-1567767292278-a4f21aa2d36e?w=400&q=80'
+    ]
+  },
+  {
+    id:8, type:'house', title:'Селска къща с голям двор, Стара Загора',
+    city:'Stara Zagora', district:'Кольо Ганчев', price:62000, area:160, rooms:4, floor:null, totalFloors:2,
+    brokerName:'Тодор Колев', brokerInitial:'Т', rating:4.3, reviews:6, badge:'',
+    description:'Традиционна българска къща с просторен двор от 800м². Плодна градина, кладенец, гараж. Отлично за постоянно живеене или ваканционен имот.',
+    features:['Двор','Гараж','Кладенец','Градина','Плодни дървета'],
+    images:[
+      'https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=800&q=80',
+      'https://images.unsplash.com/photo-1523217582562-09d0def993a6?w=400&q=80',
+      'https://images.unsplash.com/photo-1416331108676-a22ccb276e35?w=400&q=80'
+    ]
+  },
+];
+
+// ── Демо потребители (BCrypt "password123") ─────────────────
+const DEMO_USERS = [
+  { email:'admin@bgimoti.bg',   password:'password123', name:'Администратор', role:'ADMIN' },
+  { email:'maria@bgimoti.bg',   password:'password123', name:'Мария Иванова',  role:'BROKER' },
+  { email:'petar@bgimoti.bg',   password:'password123', name:'Петър Стоянов',  role:'BROKER' },
+  { email:'ivan@example.com',   password:'password123', name:'Иван Клиент',    role:'CLIENT' },
+];
+
+let allData   = [...DEMO_DATA];
+let viewData  = [...DEMO_DATA];
+let savedIds  = new Set();
+let currentPropId = null;
+let currentUser   = null;
+let currentRole   = 'CLIENT';
+let apiOnline     = false;
+
+// ════════════════════════════════════════════════════════════
+//  API HELPERS — с автоматичен fallback към демо данни
+// ════════════════════════════════════════════════════════════
+
+async function apiGet(path) {
+  const r = await fetch(API + path, { signal: AbortSignal.timeout(3000) });
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  return r.json();
+}
+
+async function apiPost(path, data) {
+  const r = await fetch(API + path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+    signal: AbortSignal.timeout(5000)
+  });
+  return { status: r.status, data: await r.json() };
+}
+
+// ── Проверка дали Spring Boot е стартиран ───────────────────
+async function checkApiStatus() {
+  try {
+    const data = await apiGet('/properties');
+    apiOnline = true;
+    allData   = data;
+    viewData  = [...data];
+    document.getElementById('apiBadge').textContent = '⚡ Spring Boot: онлайн';
+    document.getElementById('apiBadge').classList.remove('offline');
+    document.getElementById('apiBadge').style.color = '#27ae60';
+    document.getElementById('apiBadge').style.borderColor = '#27ae60';
+    document.getElementById('totalCount').textContent = data.length.toLocaleString('bg-BG');
+  } catch {
+    apiOnline = false;
+    allData   = [...DEMO_DATA];
+    viewData  = [...DEMO_DATA];
+    document.getElementById('totalCount').textContent = DEMO_DATA.length.toLocaleString('bg-BG') + '+ (демо)';
+  }
+  renderCards(viewData);
+}
+
+checkApiStatus();
+
+// ════════════════════════════════════════════════════════════
+//  RENDER CARDS
+// ════════════════════════════════════════════════════════════
+
+function renderCards(data) {
+  const grid = document.getElementById('cardsGrid');
+  document.getElementById('listingsCount').textContent =
+    `Намерени ${data.length} обяви${!apiOnline ? ' (демо режим)' : ''}`;
+
+  if (!data.length) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px 0;color:var(--muted)">
+      <div style="font-size:56px;margin-bottom:16px">🔍</div>
+      <div style="font-size:18px;font-weight:700">Няма намерени обяви</div>
+      <p style="margin-top:8px;font-size:14px">Опитайте с различни критерии</p></div>`;
+    return;
+  }
+
+  grid.innerHTML = data.map(p => {
+    const broker = p.brokerName || p.broker?.fullName || 'Брокер';
+    const initial = p.brokerInitial || broker[0].toUpperCase();
+    const rating  = p.rating || 5.0;
+    const type = (p.type || 'apartment').toLowerCase();
+    const img = (p.images && p.images[0]) ? p.images[0] : '';
+
+    return `
+    <div class="prop-card" onclick="openPropModal(${p.id})">
+      <div class="card-image">
+        <img src="${img}" alt="${p.title}" loading="lazy"
+          onerror="this.style.background='linear-gradient(135deg,#E8E8F0,#D0D0E0)';this.style.fontSize='64px';this.style.display='flex';this.style.alignItems='center';this.style.justifyContent='center'">
+        ${p.badge==='new'?'<span class="card-badge new">НОВО</span>':p.badge==='rent'?'<span class="card-badge rent">НАЕМ</span>':''}
+        <button class="save-btn ${savedIds.has(p.id)?'saved':''}"
+          onclick="toggleSave(event,${p.id})">${savedIds.has(p.id)?'❤️':'🤍'}</button>
+      </div>
+      <div class="card-body">
+        <div class="card-price">€ ${Number(p.price).toLocaleString('bg-BG')}</div>
+        <div class="card-title">${p.title}</div>
+        <div class="card-location">📍 ${p.district || ''}, ${p.city}</div>
+        <div class="card-specs">
+          ${p.rooms?`<div class="spec">🚪 ${p.rooms} ст.</div>`:''}
+          <div class="spec">📐 ${p.area} м²</div>
+          ${p.floor!=null?`<div class="spec">🏗️ Ет. ${p.floor}/${p.totalFloors}</div>`:''}
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="broker-mini">
+          <div class="broker-avatar">${initial}</div>
+          <span>${broker}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:4px">
+          <span class="stars">★</span>
+          <span style="font-size:12px;font-weight:700">${rating}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════════════════════════
+//  FILTER / SORT / SEARCH
+// ════════════════════════════════════════════════════════════
+
+function filterListings() {
+  const loc     = document.getElementById('locationSearch').value.toLowerCase();
+  const type    = (document.getElementById('typeSearch').value || document.getElementById('typeFilter').value).toLowerCase();
+  const maxPH   = parseFloat(document.getElementById('priceSearch').value) || Infinity;
+  const minP    = parseFloat(document.getElementById('minPrice').value) || 0;
+  const maxP    = parseFloat(document.getElementById('maxPrice').value) || Infinity;
+  const minA    = parseFloat(document.getElementById('minArea').value) || 0;
+  const maxA    = parseFloat(document.getElementById('maxArea').value) || Infinity;
+  const rooms   = document.getElementById('roomsSearch').value || document.getElementById('roomsFilter').value;
+  const city    = document.getElementById('cityFilter').value;
+
+  viewData = allData.filter(p => {
+    const t = (p.type || '').toLowerCase();
+    const priceN = Number(p.price);
+    const areaN  = Number(p.area);
+    if (loc && !p.title.toLowerCase().includes(loc) && !(p.district||'').toLowerCase().includes(loc) && !p.city.toLowerCase().includes(loc)) return false;
+    if (type && t !== type) return false;
+    if (priceN > Math.min(maxPH, maxP) || priceN < minP) return false;
+    if (areaN < minA || areaN > maxA) return false;
+    if (rooms) { if (rooms==='4'&&p.rooms<4) return false; else if (rooms!=='4'&&p.rooms!==parseInt(rooms)) return false; }
+    if (city && p.city !== city) return false;
+    return true;
+  });
+  renderCards(viewData);
+}
+
+function resetFilters() {
+  ['cityFilter','typeFilter','minPrice','maxPrice','minArea','maxArea','roomsFilter','locationSearch','typeSearch','priceSearch','roomsSearch']
+    .forEach(id => { document.getElementById(id).value = ''; });
+  viewData = [...allData];
+  renderCards(viewData);
+  showToast('🔄 Филтрите са изчистени');
+}
+
+function sortListings(val) {
+  if (val==='price-asc')  viewData.sort((a,b) => a.price-b.price);
+  else if (val==='price-desc') viewData.sort((a,b) => b.price-a.price);
+  else if (val==='area')  viewData.sort((a,b) => b.area-a.area);
+  else viewData.sort((a,b) => b.id-a.id);
+  renderCards(viewData);
+}
+
+function filterType(type) {
+  document.getElementById('typeFilter').value = type;
+  document.getElementById('typeSearch').value = type;
+  filterListings();
+  document.querySelector('.main-layout').scrollIntoView({behavior:'smooth'});
+}
+
+// ════════════════════════════════════════════════════════════
+//  PROPERTY DETAIL MODAL
+// ════════════════════════════════════════════════════════════
+
+function openPropModal(id) {
+  const p = allData.find(x => x.id === id);
+  if (!p) return;
+  currentPropId = id;
+
+  const broker  = p.brokerName || 'Брокер';
+  const initial = p.brokerInitial || broker[0].toUpperCase();
+  const type    = (p.type || 'apartment').toLowerCase();
+  const feats   = typeof p.features === 'string'
+    ? JSON.parse(p.features || '[]') : (p.features || []);
+  const imgs = p.images || [];
+
+  // ── Снимки ───────────────────────────────────────────────
+  document.getElementById('modalImgMain').src   = imgs[0] || '';
+  document.getElementById('modalImgThumb1').src = imgs[1] || imgs[0] || '';
+  document.getElementById('modalImgThumb2').src = imgs[2] || imgs[0] || '';
+
+  document.getElementById('modalTitle').textContent       = p.title;
+  document.getElementById('modalBrokerName').textContent  = broker;
+  document.getElementById('modalBrokerAvatar').textContent = initial;
+  document.getElementById('modalRating').textContent      = p.rating || 5.0;
+  document.getElementById('modalReviews').textContent     = `(${p.reviews || 0} отзива)`;
+  document.getElementById('modalStars').textContent       = '★'.repeat(Math.round(p.rating||5));
+  document.getElementById('modalDesc').textContent        = p.description || 'Без описание.';
+  document.getElementById('modalSpecs').innerHTML = [
+    { l:'Цена',v:`€ ${Number(p.price).toLocaleString('bg-BG')}` },
+    { l:'Площ',v:`${p.area} м²` },
+    p.rooms ? { l:'Стаи',v:`${p.rooms} стаи` } : null,
+    p.floor != null ? { l:'Етаж',v:`${p.floor} от ${p.totalFloors}` } : null,
+    { l:'Тип',v:typesBG[type]||type },
+    { l:'Квартал',v:`${p.district||''}, ${p.city}` },
+  ].filter(Boolean).map(s =>
+    `<div class="detail-spec"><div class="detail-spec-label">${s.l}</div><div class="detail-spec-value">${s.v}</div></div>`
+  ).join('');
+  document.getElementById('modalFeatures').innerHTML =
+    feats.map(f => `<span class="feature-tag">✓ ${f}</span>`).join('');
+  document.getElementById('contactMsg').value =
+    `Здравейте, интересувам се от "${p.title}". Моля свържете се с мен.`;
+
+  document.querySelectorAll('.star-btn').forEach(b => b.classList.remove('active'));
+  openModal('propModal');
+}
+
+// ════════════════════════════════════════════════════════════
+//  AUTH — LOGIN / REGISTER (с реален API + fallback)
+// ════════════════════════════════════════════════════════════
+
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass  = document.getElementById('loginPass').value;
+
+  // ── Клиентска валидация ─────────────────────────────────
+  if (!email || !pass) {
+    showAlert('loginAlert', 'error', '⚠️ Моля попълнете имейл и парола.');
+    highlightEmpty(['loginEmail', 'loginPass']);
+    return;
+  }
+  if (!email.includes('@')) {
+    showAlert('loginAlert', 'error', '⚠️ Невалиден имейл адрес.');
+    document.getElementById('loginEmail').classList.add('error');
+    return;
+  }
+
+  setLoading('loginBtn', true, 'Влиза...');
+  clearAlert('loginAlert');
+
+  try {
+    if (apiOnline) {
+      // ── Spring Boot: POST /api/auth/login ───────────────
+      const { status, data } = await apiPost('/auth/login', { email, password: pass });
+
+      if (data.success) {
+        loginSuccess(data.name, data.email, data.role);
+      } else {
+        // ← HTTP 401 от Spring Boot
+        showAlert('loginAlert', 'error', '🔒 ' + data.message);
+        document.getElementById('loginEmail').classList.add('error');
+        document.getElementById('loginPass').classList.add('error');
+      }
+    } else {
+      // ── Демо режим: локална проверка ────────────────────
+      const found = DEMO_USERS.find(u =>
+        u.email.toLowerCase() === email.toLowerCase() && u.password === pass
+      );
+
+      if (found) {
+        loginSuccess(found.name, found.email, found.role);
+      } else {
+        // ← ГРЕШНИ ДАННИ — показваме ясно съобщение за грешка
+        showAlert('loginAlert', 'error',
+          '🔒 Невалиден имейл или парола. Моля опитайте отново.');
+        document.getElementById('loginEmail').classList.add('error');
+        document.getElementById('loginPass').classList.add('error');
+        // Изтриваме само паролата, не имейла
+        document.getElementById('loginPass').value = '';
+      }
+    }
+  } catch (err) {
+    showAlert('loginAlert', 'error', '🌐 Грешка при свързване. Проверете интернет връзката.');
+  } finally {
+    setLoading('loginBtn', false, 'Влез в профила');
+  }
+}
+
+async function doRegister() {
+  const name  = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const pass  = document.getElementById('regPass').value;
+
+  // ── Клиентска валидация ─────────────────────────────────
+  if (!name || !email || !pass) {
+    showAlert('registerAlert', 'error', '⚠️ Моля попълнете всички задължителни полета.');
+    return;
+  }
+  if (!email.includes('@')) {
+    showAlert('registerAlert', 'error', '⚠️ Невалиден имейл адрес.');
+    return;
+  }
+  if (pass.length < 8) {
+    showAlert('registerAlert', 'error', '⚠️ Паролата трябва да е поне 8 символа.');
+    document.getElementById('regPass').classList.add('error');
+    return;
+  }
+
+  setLoading('registerBtn', true, 'Създава профил...');
+  clearAlert('registerAlert');
+
+  try {
+    if (apiOnline) {
+      // ── Spring Boot: POST /api/auth/register ────────────
+      const { status, data } = await apiPost('/auth/register', {
+        fullName: name, email, password: pass,
+        role: currentRole,
+        licenseNo: document.getElementById('regLicense')?.value || ''
+      });
+
+      if (data.success) {
+        loginSuccess(data.name, data.email, data.role);
+        showToast('🎉 ' + data.message);
+      } else {
+        // ← HTTP 409 Conflict (дублиран имейл)
+        showAlert('registerAlert', 'error', '⚠️ ' + data.message);
+      }
+    } else {
+      // ── Демо режим ──────────────────────────────────────
+      const exists = DEMO_USERS.some(u => u.email.toLowerCase() === email.toLowerCase());
+      if (exists) {
+        showAlert('registerAlert', 'error',
+          '⚠️ Потребител с този имейл вече съществува. Опитайте с друг.');
+        return;
+      }
+      DEMO_USERS.push({ email, password: pass, name, role: currentRole });
+      loginSuccess(name, email, currentRole);
+      showToast('🎉 Профилът е създаден успешно!');
+    }
+  } catch (err) {
+    showAlert('registerAlert', 'error', '🌐 Грешка при свързване с API.');
+  } finally {
+    setLoading('registerBtn', false, 'Създай профил');
+  }
+}
+
+function loginSuccess(name, email, role) {
+  currentUser = { name, email, role };
+  closeModal('authModal');
+
+  const initials = name[0].toUpperCase();
+  document.getElementById('headerActions').innerHTML = `
+    <div class="user-pill" title="${email} (${role})">
+      <div class="user-pill-avatar">${initials}</div>
+      <span>${name}</span>
+    </div>
+    <button class="btn btn-ghost" onclick="doLogout()">Изход</button>`;
+
+  if (role === 'ADMIN') {
+    document.getElementById('adminBar').classList.add('visible');
+    document.querySelector('.admin-bar span').textContent =
+      `🛡️ Административен панел — ${name}`;
+  }
+  showToast(`✅ Добре дошли, ${name}!`);
+}
+
+function doLogout() {
+  currentUser = null; currentRole = 'CLIENT';
+  document.getElementById('adminBar').classList.remove('visible');
+  document.getElementById('headerActions').innerHTML = `
+    <button class="btn btn-ghost" onclick="openModal('authModal')">Вход</button>
+    <button class="btn btn-brand" onclick="openModal('authModal')">Регистрация</button>`;
+  showToast('👋 Излязохте от профила си');
+}
+
+function selectRole(r) {
+  currentRole = r;
+  ['CLIENT','BROKER','ADMIN'].forEach(x => {
+    document.getElementById('role'+x[0]+x.slice(1).toLowerCase())?.classList.toggle('active', x===r);
+  });
+  document.getElementById('brokerFields').style.display = r==='BROKER' ? 'block' : 'none';
+}
+
+// ════════════════════════════════════════════════════════════
+//  SAVE / CONTACT / RATE
+// ════════════════════════════════════════════════════════════
+
+function toggleSave(e, id) {
+  e.stopPropagation();
+  if (savedIds.has(id)) { savedIds.delete(id); showToast('🤍 Премахнато от запазените'); }
+  else { savedIds.add(id); showToast('❤️ Добавено в запазените!'); }
+  document.getElementById('savedCount').textContent = savedIds.size;
+  renderCards(viewData);
+}
+
+function toggleSaveModal() {
+  if (!currentPropId) return;
+  if (savedIds.has(currentPropId)) { savedIds.delete(currentPropId); showToast('🤍 Премахнато'); }
+  else { savedIds.add(currentPropId); showToast('❤️ Запазено!'); }
+  document.getElementById('savedCount').textContent = savedIds.size;
+  renderCards(viewData);
+}
+
+function openSavedModal() {
+  const c    = document.getElementById('savedListContainer');
+  const saved = allData.filter(p => savedIds.has(p.id));
+  c.innerHTML = saved.length ? saved.map(p => `
+    <div style="display:flex;align-items:center;gap:14px;padding:14px;border:1px solid var(--border);border-radius:10px;margin-bottom:10px;cursor:pointer"
+      onclick="closeModal('savedModal');openPropModal(${p.id})">
+      <div style="width:56px;height:56px;border-radius:8px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:28px">${emojis[p.type]||'🏠'}</div>
+      <div style="flex:1"><div style="font-weight:700;font-size:14px">${p.title}</div><div style="font-size:12px;color:var(--muted)">📍 ${p.district}, ${p.city}</div></div>
+      <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--brand)">€ ${Number(p.price).toLocaleString('bg-BG')}</div>
+      <button onclick="event.stopPropagation();savedIds.delete(${p.id});document.getElementById('savedCount').textContent=savedIds.size;openSavedModal();renderCards(viewData)"
+        style="border:none;background:none;cursor:pointer;font-size:18px;color:var(--muted)">✕</button>
+    </div>`).join('')
+    : '<p style="text-align:center;color:var(--muted);padding:40px 0">Нямате запазени обяви.</p>';
+  openModal('savedModal');
+}
+
+async function sendContact() {
+  const name  = document.getElementById('contactName').value.trim();
+  const phone = document.getElementById('contactPhone').value.trim();
+  const msg   = document.getElementById('contactMsg').value.trim();
+  if (!name || !phone) { showToast('⚠️ Попълнете ime и телефон'); return; }
+  showToast('📬 Съобщението е изпратено до брокера!');
+  document.getElementById('contactName').value = '';
+  document.getElementById('contactPhone').value = '';
+}
+
+async function rateBroker(n) {
+  document.querySelectorAll('.star-btn').forEach((b,i) => b.classList.toggle('active', i < n));
+  if (apiOnline && currentPropId) {
+    try { await apiPost(`/properties/${currentPropId}/rate`, { rating: n }); }
+    catch {}
+  }
+  showToast(`⭐ Оценихте брокера с ${n}/5!`);
+}
+
+function addNewListing() {
+  const title = document.getElementById('newTitle').value.trim();
+  const price = parseFloat(document.getElementById('newPrice').value) || 0;
+  const area  = parseFloat(document.getElementById('newArea').value) || 0;
+  const type  = document.getElementById('newType').value;
+  const city  = document.getElementById('newCity').value;
+  const rooms = parseInt(document.getElementById('newRooms').value) || 1;
+  const desc  = document.getElementById('newDesc').value || 'Без описание.';
+  if (!title || !price || !area) { showToast('⚠️ Попълнете задължителните полета'); return; }
+  const newId = Math.max(...allData.map(p => p.id)) + 1;
+  const newP  = { id:newId, type, title, city, district:'Нов квартал', price, area, rooms, floor:1, totalFloors:5, brokerName:currentUser?.name||'Брокер', brokerInitial:(currentUser?.name||'Б')[0].toUpperCase(), rating:5.0, reviews:0, badge:'new', description:desc, features:[],
+    images:['https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80','https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&q=80','https://images.unsplash.com/photo-1560185007-c5ca9d2c014d?w=400&q=80'] };
+  allData.unshift(newP);
+  viewData = [...allData];
+  renderCards(viewData);
+  closeModal('addListingModal');
+  showToast('✅ Обявата е публикувана успешно!');
+}
+
+// ════════════════════════════════════════════════════════════
+//  UI HELPERS
+// ════════════════════════════════════════════════════════════
+
+function showAlert(containerId, type, msg) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = `<div class="alert alert-${type}">
+    <span class="alert-icon">${type==='error'?'❌':'✅'}</span>
+    <span>${msg}</span>
+  </div>`;
+}
+function clearAlert(id) {
+  const el = document.getElementById(id);
+  if (el) el.innerHTML = '';
+  document.querySelectorAll('.form-field input.error').forEach(i => i.classList.remove('error'));
+}
+function highlightEmpty(ids) {
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && !el.value.trim()) el.classList.add('error');
+  });
+}
+function setLoading(btnId, loading, text) {
+  const btn = document.getElementById(btnId);
+  if (!btn) return;
+  btn.disabled = loading;
+  btn.innerHTML = loading
+    ? `<span class="spinner"></span> ${text}`
+    : text;
+}
+
+function openModal(id)  { document.getElementById(id).classList.add('open');    document.body.style.overflow = 'hidden'; }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow = ''; }
+
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', function(e) { if (e.target === this) closeModal(this.id); });
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(m => closeModal(m.id));
+});
+
+function setAuthTab(el, mode) {
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('loginForm').style.display    = mode==='login'    ? 'flex' : 'none';
+  document.getElementById('registerForm').style.display = mode==='register' ? 'flex' : 'none';
+  clearAlert('loginAlert'); clearAlert('registerAlert');
+}
+function setSearchTab(el) {
+  document.querySelectorAll('.search-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+let toastTimer;
+function showToast(msg) {
+  clearTimeout(toastTimer);
+  const match = msg.match(/^([^\s]+)\s(.*)/s);
+  document.getElementById('toastIcon').textContent = match ? match[1] : 'ℹ️';
+  document.getElementById('toastMsg').textContent  = match ? match[2] : msg;
+  document.getElementById('toast').classList.add('show');
+  toastTimer = setTimeout(() => document.getElementById('toast').classList.remove('show'), 3200);
+}
+function swapMain(src) {
+  const main = document.getElementById('modalImgMain');
+  main.style.opacity = '0';
+  main.style.transition = 'opacity 0.2s';
+  setTimeout(() => {
+    main.src = src;
+    main.style.opacity = '1';
+  }, 200);
+}
+</script>
+</body>
+</html>
